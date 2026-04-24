@@ -50,8 +50,7 @@ SyncBoard/
 │
 ├── server/                 # Backend (Node + Socket.io)
 │   ├── server.js
-│   ├── package.json
-│   └── node_modules/       # Ignored
+│   └── package.json
 │
 ├── .gitignore
 ├── README.md
@@ -65,7 +64,7 @@ SyncBoard/
 ### 1. Clone the repo
 
 ```
-git clone https://github.com/your-username/SyncBoard.git
+git clone https://github.com/yuvrajk-dev/SyncBoard.git
 cd SyncBoard
 ```
 
