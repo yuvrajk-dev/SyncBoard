@@ -1,8 +1,7 @@
-import React from "react";
 import Canvas from "../Components/Canvas";
 import LeftMenu from "../Components/LeftMenu";
 
-const Main = () => {
+const CanvasContainer = () => {
   return (
     <div className=" flex flex-1 gap-1">
       <Canvas />
@@ -11,4 +10,4 @@ const Main = () => {
   );
 };
 
-export default Main;
+export default CanvasContainer;

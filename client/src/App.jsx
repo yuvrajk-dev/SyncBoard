@@ -1,11 +1,9 @@
-import Layout from "./routes/Layout";
-import { supabase } from "./utils/supabase";
+import Body from "./routes/Body";
 
 function App() {
-  console.log(supabase);
   return (
     <>
-      <Layout />
+      <Body />
     </>
   );
 }

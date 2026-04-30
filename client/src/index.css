@@ -81,3 +81,11 @@ body.light {
   --success: oklch(0.5 0.05 160);
   --info: oklch(0.5 0.05 260);
 }
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
