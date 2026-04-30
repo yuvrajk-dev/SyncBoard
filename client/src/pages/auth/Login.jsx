@@ -4,6 +4,13 @@ import Footer from "../../Components/Footer";
 const Login = () => {
   const [signin, setSignin] = useState(true);
   const [avatarID, setAvatarID] = useState(null);
+
+  const avatar = [
+    { color: "bg-red-500", link: "/avatarM01.png", id: "001" },
+    { color: "bg-blue-500", link: "/avatarM02.png", id: "002" },
+    { color: "bg-green-500", link: "/avatarF03.png", id: "003" },
+    { color: "bg-yellow-500", link: "/avatarF04.png", id: "004" },
+  ];
   return (
     <>
       <div className=" w-full h-screen flex justify-center items-center ">
@@ -41,27 +48,26 @@ const Login = () => {
           {!signin && (
             <div className="bg-(--bg-light) py-3 px-3 rounded-lg flex flex-col gap-2">
               {/* Label */}
-              <span className="text-xs ">Select Avatar</span>
+              <span className="text-xs  text-(--text-muted)/80">
+                Select Avatar
+              </span>
 
               {/* Avatars */}
-              <div className="flex justify-between items-center">
-                {[
-                  "bg-red-500",
-                  "bg-blue-500",
-                  "bg-green-500",
-                  "bg-yellow-500",
-                ].map((color, i) => (
+              <div className="flex  justify-between items-center">
+                {avatar.map((avatar) => (
                   <div
-                    key={i}
-                    onClick={() => setAvatarID(i)}
-                    className={`w-10 h-10 rounded-full cursor-pointer transition
-          ${color}
-          ${
-            avatarID === i
-              ? "ring-2 ring-blue-400 scale-110"
-              : "hover:scale-105"
-          }`}
-                  ></div>
+                    key={avatar.id}
+                    onClick={() => setAvatarID(avatar.id)}
+                    className={`w-10 h-10 rounded-full cursor-pointer transition 
+          ${avatar.color}
+          ${avatarID === avatar.id ? " scale-110" : "hover:scale-105"}`}
+                  >
+                    <img
+                      src={avatar.link}
+                      alt="Avatar"
+                      className="w-full  h-full rounded-full cursor-pointer "
+                    />
+                  </div>
                 ))}
               </div>
             </div>

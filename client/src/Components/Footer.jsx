@@ -1,6 +1,6 @@
 const Footer = () => {
   return (
-    <footer className="w-full border-t border-(--border-muted) bg-(--bg) px-6 py-3 flex items-center justify-between text-sm text-[var(--text-muted)]">
+    <footer className="w-full   bg-(--bg) px-6 py-3 flex items-center justify-between text-sm text-(--text-muted)">
       {/* Left */}
       <div>© {new Date().getFullYear()} SyncBoard</div>
 
