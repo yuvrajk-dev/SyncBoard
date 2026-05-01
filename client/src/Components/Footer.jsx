@@ -19,9 +19,12 @@ const Footer = () => {
 
       {/* Right */}
       <div className="flex gap-3">
-        <span className="hover:text-(--text) cursor-pointer transition">
+        <a
+          href="https://github.com/yuvrajk-dev"
+          className="hover:text-(--text) cursor-pointer transition"
+        >
           GitHub
-        </span>
+        </a>
         <span className="hover:text-(--text) cursor-pointer transition">
           Contact
         </span>
