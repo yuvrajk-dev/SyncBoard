@@ -2,17 +2,17 @@ import React, { useEffect, useState } from "react";
 import Footer from "../../Components/Footer";
 
 const Login = () => {
-  const [signin, setSignin] = useState(() => {
+  const [isSignin, setIsSignin] = useState(() => {
     const value = sessionStorage.getItem("signin");
-    return value === "true";
+    return value === null ? true : value === "true";
   });
   const [avatarID, setAvatarID] = useState(null);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   useEffect(() => {
-    sessionStorage.setItem("signin", signin);
-  }, [signin]);
+    sessionStorage.setItem("signin", isSignin);
+  }, [isSignin]);
 
   const showValidation = password && confirmPassword;
   const isMismatch = showValidation && password !== confirmPassword;
@@ -33,10 +33,10 @@ const Login = () => {
           className=" bg-(--bg) w-80 py-10 p-3 gap-3 shadow-(--shadow-m) flex justify-center flex-col rounded-2xl"
         >
           <h1 className=" font-semibold text-center text-4xl  mb-6">
-            {signin ? "Sign In" : "Sign Up"}
+            {isSignin ? "Sign In" : "Sign Up"}
           </h1>
 
-          {!signin && (
+          {!isSignin && (
             <input
               type="text"
               placeholder="User Name"
@@ -58,7 +58,7 @@ const Login = () => {
             className=" outline-none bg-(--bg-light) py-2 px-3 rounded-lg"
           />
 
-          {!signin && (
+          {!isSignin && (
             <input
               value={confirmPassword}
               onChange={(e) => {
@@ -70,7 +70,7 @@ const Login = () => {
             />
           )}
 
-          {!signin && (
+          {!isSignin && (
             <div className="bg-(--bg-light) py-3 px-3 rounded-lg flex flex-col gap-2">
               {/* Label */}
               <span className="text-xs  text-(--text-muted)/80">
@@ -102,17 +102,17 @@ const Login = () => {
             {isMismatch && "Password is not matching"}
           </p>
           <button className=" rounded-lg py-2 shadow-(--shadow-s) font-semibold bg-(--bg-light) hover:shadow-(--shadow-m)">
-            {signin ? "Sign In" : "Sign Up"}
+            {isSignin ? "Sign In" : "Sign Up"}
           </button>
           <p className="text-sm text-center text-(--text-muted)">
-            {signin ? " Don't have an account? " : "Already have an account?"}
+            {isSignin ? " Don't have an account? " : "Already have an account?"}
             <span
               onClick={() => {
-                setSignin(!signin);
+                setIsSignin(!isSignin);
               }}
               className="text-blue-400 cursor-pointer hover:underline"
             >
-              {signin ? " Register" : " Login"}
+              {isSignin ? " Register" : " Login"}
             </span>
           </p>
         </form>
