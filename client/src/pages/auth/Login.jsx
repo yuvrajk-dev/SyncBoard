@@ -23,6 +23,7 @@ const Login = () => {
     { color: "border-green-500", link: "/avatarF03.png", id: "003" },
     { color: "border-yellow-500", link: "/avatarF04.png", id: "004" },
   ];
+
   return (
     <>
       <div className=" w-full h-screen flex justify-center items-center ">
@@ -98,7 +99,6 @@ const Login = () => {
             </div>
           )}
           <p className="text-red-500 text-xs">
-            {" "}
             {isMismatch && "Password is not matching"}
           </p>
           <button className=" rounded-lg py-2 shadow-(--shadow-s) font-semibold bg-(--bg-light) hover:shadow-(--shadow-m)">
