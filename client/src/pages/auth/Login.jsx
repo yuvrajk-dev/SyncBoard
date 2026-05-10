@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
 import Footer from "../../Components/Footer";
+import { validation } from "../../utils/validate";
 
 const Login = () => {
   const [isSignin, setIsSignin] = useState(() => {
     const value = sessionStorage.getItem("signin");
     return value === null ? true : value === "true";
   });
-  const [avatarID, setAvatarID] = useState(null);
+
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [avatarID, setAvatarID] = useState(null);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     sessionStorage.setItem("signin", isSignin);
@@ -26,38 +31,69 @@ const Login = () => {
 
   return (
     <>
-      <div className=" w-full h-screen flex justify-center items-center ">
+      <div className=" w-full min-h-screen py-5 flex justify-center items-center ">
         <form
           onSubmit={(e) => {
             e.preventDefault();
+
+            const validationErrors = validation(
+              username,
+              email,
+              password,
+              avatarID,
+              isSignin,
+            );
+
+            setErrors(validationErrors);
+
+            if (Object.keys(validationErrors).length > 0) {
+              return;
+            }
           }}
           className=" bg-(--bg) w-80 py-10 p-3 gap-3 shadow-(--shadow-m) flex justify-center flex-col rounded-2xl"
         >
           <h1 className=" font-semibold text-center text-4xl  mb-6">
             {isSignin ? "Sign In" : "Sign Up"}
           </h1>
+          {/* username */}
 
           {!isSignin && (
             <input
+              value={username}
+              onChange={(e) => {
+                setUsername(e.target.value);
+              }}
               type="text"
               placeholder="User Name"
               className=" outline-none bg-(--bg-light) py-2 px-3 rounded-lg"
             />
           )}
+          <p className="text-red-500 text-xs">{errors.username}</p>
+
+          {/* email  */}
+
           <input
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
             type="text"
             placeholder="Email"
             className=" outline-none bg-(--bg-light) py-2 px-3 rounded-lg"
           />
+          <p className="text-red-500 text-xs">{errors.email}</p>
+
+          {/* password */}
           <input
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
             }}
-            type="text"
+            type="password"
             placeholder="Password"
             className=" outline-none bg-(--bg-light) py-2 px-3 rounded-lg"
           />
+          <p className="text-red-500 text-xs">{errors.password}</p>
 
           {!isSignin && (
             <input
@@ -70,6 +106,9 @@ const Login = () => {
               className={`${isMismatch ? "outline-1" : "outline-none"}  outline-red-500  bg-(--bg-light) py-2 px-3 rounded-lg`}
             />
           )}
+          <p className="text-red-500 text-xs">
+            {isMismatch && "Password is not matching"}
+          </p>
 
           {!isSignin && (
             <div className="bg-(--bg-light) py-3 px-3 rounded-lg flex flex-col gap-2">
@@ -86,7 +125,7 @@ const Login = () => {
                     onClick={() => setAvatarID(avatar.id)}
                     className={`w-10 h-10 rounded-full cursor-pointer transition 
           border ${avatar.color}
-          ${avatarID === avatar.id ? " shadow-(--shadow-l) scale-115 translate-y-1" : "translate-y-0.5 shadow-(--shadow-s)  hover:scale-105"}`}
+          ${avatarID === avatar.id ? "ring-(--border-muted) ring-2 shadow-(--shadow-l) scale-115 translate-y-1" : "translate-y-0.5 shadow-(--shadow-s)  hover:scale-105"}`}
                   >
                     <img
                       src={avatar.link}
@@ -98,9 +137,8 @@ const Login = () => {
               </div>
             </div>
           )}
-          <p className="text-red-500 text-xs">
-            {isMismatch && "Password is not matching"}
-          </p>
+          <p className="text-red-500 text-xs">{errors.avatar}</p>
+
           <button className=" rounded-lg py-2 shadow-(--shadow-s) font-semibold bg-(--bg-light) hover:shadow-(--shadow-m)">
             {isSignin ? "Sign In" : "Sign Up"}
           </button>
@@ -109,6 +147,12 @@ const Login = () => {
             <span
               onClick={() => {
                 setIsSignin(!isSignin);
+                setErrors({});
+                setUsername("");
+                setEmail("");
+                setPassword("");
+                setConfirmPassword("");
+                setAvatarID(null);
               }}
               className="text-blue-400 cursor-pointer hover:underline"
             >

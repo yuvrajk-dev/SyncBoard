@@ -1,30 +1,32 @@
-const validation = (username, email, password, avatar) => {
+const validation = (username, email, password, avatar, isSignin) => {
   const errors = {};
 
-  // Username validation
-  if (!username.trim()) {
-    errors.username = "Username is required";
-  } else if (username.length > 8) {
-    errors.username = "Username must be under 8 characters";
+  // Signup only
+  if (!isSignin) {
+    if (!username.trim()) {
+      errors.username = "Username is required";
+    }
+
+    if (username.length > 8) {
+      errors.username = "Username must be under 8 characters";
+    }
+
+    if (!avatar) {
+      errors.avatar = "Select an avatar";
+    }
   }
 
-  // Email validation
+  // Common validations
   const emailRegex = /^[^\s@]+@[^\s@]+\.com$/;
 
   if (!email.trim()) {
     errors.email = "Email is required";
   } else if (!emailRegex.test(email)) {
-    errors.email = "Enter a valid email";
+    errors.email = "Enter valid email";
   }
 
-  // Password validation
   if (!password.trim()) {
     errors.password = "Password is required";
-  }
-
-  // Avatar validation
-  if (!avatar) {
-    errors.avatar = "Avatar is required";
   }
 
   return errors;
