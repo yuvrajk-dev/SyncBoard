@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Footer from "../../Components/Footer";
 import { validation } from "../../utils/validate";
+import { supabase } from "../../utils/supabase";
 
 const Login = () => {
+  const [loading, setLoading] = useState(false);
   const [isSignin, setIsSignin] = useState(() => {
     const value = sessionStorage.getItem("signin");
     return value === null ? true : value === "true";
@@ -33,21 +35,64 @@ const Login = () => {
     <>
       <div className=" w-full min-h-screen py-5 flex justify-center items-center ">
         <form
-          onSubmit={(e) => {
+          onSubmit={async (e) => {
             e.preventDefault();
 
-            const validationErrors = validation(
-              username,
-              email,
-              password,
-              avatarID,
-              isSignin,
-            );
+            setLoading(true);
 
-            setErrors(validationErrors);
+            try {
+              const validationErrors = validation(
+                username,
+                email,
+                password,
+                avatarID,
+                isSignin,
+              );
 
-            if (Object.keys(validationErrors).length > 0) {
-              return;
+              setErrors(validationErrors);
+
+              if (Object.keys(validationErrors).length > 0) {
+                return;
+              }
+
+              if (isSignin) {
+                const { error } = await supabase.auth.signInWithPassword({
+                  email,
+                  password,
+                });
+
+                if (error) {
+                  setErrors({ auth: error.message });
+                  return;
+                }
+              }
+
+              if (!isSignin) {
+                const { data, error } = await supabase.auth.signUp({
+                  email,
+                  password,
+                });
+
+                if (error) {
+                  setErrors({ auth: error.message });
+                  return;
+                }
+
+                const { error: profileError } = await supabase
+                  .from("profiles")
+                  .insert({
+                    id: data.user.id,
+                    username,
+                    avatar: avatarID,
+                  });
+
+                if (profileError) {
+                  setErrors({ auth: profileError.message });
+                  return;
+                }
+              }
+            } finally {
+              setLoading(false);
             }
           }}
           className=" bg-(--bg) w-80 py-10 p-3 gap-3 shadow-(--shadow-m) flex justify-center flex-col rounded-2xl"
@@ -138,9 +183,13 @@ const Login = () => {
             </div>
           )}
           <p className="text-red-500 text-xs">{errors.avatar}</p>
+          <p className="text-red-500 text-xs">{errors.auth}</p>
 
-          <button className=" rounded-lg py-2 shadow-(--shadow-s) font-semibold bg-(--bg-light) hover:shadow-(--shadow-m)">
-            {isSignin ? "Sign In" : "Sign Up"}
+          <button
+            disabled={loading}
+            className=" rounded-lg py-2 shadow-(--shadow-s) font-semibold bg-(--bg-light) hover:shadow-(--shadow-m)"
+          >
+            {loading ? "Please wait..." : isSignin ? "Sign In" : "Sign Up"}
           </button>
           <p className="text-sm text-center text-(--text-muted)">
             {isSignin ? " Don't have an account? " : "Already have an account?"}
