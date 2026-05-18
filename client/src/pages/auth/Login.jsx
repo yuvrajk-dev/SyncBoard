@@ -1,9 +1,15 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Footer from "../../Components/Footer";
 import { validation } from "../../utils/validate";
 import { supabase } from "../../utils/supabase";
+import { useNavigate } from "react-router";
+import { updateStore } from "../../utils/updateStore";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
+  const userDispatch = useDispatch();
+
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [isSignin, setIsSignin] = useState(() => {
     const value = sessionStorage.getItem("signin");
@@ -56,7 +62,7 @@ const Login = () => {
               }
 
               if (isSignin) {
-                const { error } = await supabase.auth.signInWithPassword({
+                const { data, error } = await supabase.auth.signInWithPassword({
                   email,
                   password,
                 });
@@ -65,6 +71,9 @@ const Login = () => {
                   setErrors({ auth: error.message });
                   return;
                 }
+                await updateStore(data, userDispatch);
+
+                navigate("/home");
               }
 
               if (!isSignin) {
@@ -90,6 +99,9 @@ const Login = () => {
                   setErrors({ auth: profileError.message });
                   return;
                 }
+                await updateStore(data, userDispatch);
+
+                navigate("/home");
               }
             } finally {
               setLoading(false);
@@ -103,87 +115,114 @@ const Login = () => {
           {/* username */}
 
           {!isSignin && (
-            <input
-              value={username}
-              onChange={(e) => {
-                setUsername(e.target.value);
-              }}
-              type="text"
-              placeholder="User Name"
-              className=" outline-none bg-(--bg-light) py-2 px-3 rounded-lg"
-            />
+            <div>
+              <input
+                value={username}
+                onChange={(e) => {
+                  setUsername(e.target.value);
+                }}
+                type="text"
+                placeholder="User Name"
+                className="w-full outline-none  bg-(--bg-light) py-2 px-3 rounded-lg"
+              />
+              {errors.username && (
+                <p className="text-red-500 mt-1 ml-1 text-xs">
+                  {errors.username}
+                </p>
+              )}
+            </div>
           )}
-          <p className="text-red-500 text-xs">{errors.username}</p>
 
           {/* email  */}
 
-          <input
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-            type="text"
-            placeholder="Email"
-            className=" outline-none bg-(--bg-light) py-2 px-3 rounded-lg"
-          />
-          <p className="text-red-500 text-xs">{errors.email}</p>
-
-          {/* password */}
-          <input
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-            type="password"
-            placeholder="Password"
-            className=" outline-none bg-(--bg-light) py-2 px-3 rounded-lg"
-          />
-          <p className="text-red-500 text-xs">{errors.password}</p>
-
-          {!isSignin && (
+          <div>
             <input
-              value={confirmPassword}
+              value={email}
               onChange={(e) => {
-                setConfirmPassword(e.target.value);
+                setEmail(e.target.value);
               }}
               type="text"
-              placeholder="Confirm Password"
-              className={`${isMismatch ? "outline-1" : "outline-none"}  outline-red-500  bg-(--bg-light) py-2 px-3 rounded-lg`}
+              placeholder="Email"
+              className=" outline-none w-full bg-(--bg-light) py-2 px-3 rounded-lg"
             />
-          )}
-          <p className="text-red-500 text-xs">
-            {isMismatch && "Password is not matching"}
-          </p>
+            {errors.email && (
+              <p className="text-red-500 mt-1 ml-1 text-xs">{errors.email}</p>
+            )}
+          </div>
+          {/* password */}
+          <div>
+            <input
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+              type="password"
+              placeholder="Password"
+              className=" outline-none w-full bg-(--bg-light) py-2 px-3 rounded-lg"
+            />
+            {errors.password && (
+              <p className="text-red-500 mt-1 ml-1 text-xs">
+                {errors.password}
+              </p>
+            )}
+          </div>
 
           {!isSignin && (
-            <div className="bg-(--bg-light) py-3 px-3 rounded-lg flex flex-col gap-2">
-              {/* Label */}
-              <span className="text-xs  text-(--text-muted)/80">
-                Select Avatar
-              </span>
-
-              {/* Avatars */}
-              <div className="flex  justify-between items-center">
-                {avatar.map((avatar) => (
-                  <div
-                    key={avatar.id}
-                    onClick={() => setAvatarID(avatar.id)}
-                    className={`w-10 h-10 rounded-full cursor-pointer transition 
-          border ${avatar.color}
-          ${avatarID === avatar.id ? "ring-(--border-muted) ring-2 shadow-(--shadow-l) scale-115 translate-y-1" : "translate-y-0.5 shadow-(--shadow-s)  hover:scale-105"}`}
-                  >
-                    <img
-                      src={avatar.link}
-                      alt="Avatar"
-                      className="w-full  h-full rounded-full cursor-pointer "
-                    />
-                  </div>
-                ))}
-              </div>
+            <div>
+              <input
+                value={confirmPassword}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                }}
+                type="password"
+                placeholder="Confirm Password"
+                className={`${isMismatch ? "outline-1" : "outline-none"} w-full outline-red-500  bg-(--bg-light) py-2 px-3 rounded-lg`}
+              />
+              {isMismatch && (
+                <p className="text-red-500 mt-1 ml-1 text-xs">
+                  Password is not matching
+                </p>
+              )}
             </div>
           )}
-          <p className="text-red-500 text-xs">{errors.avatar}</p>
-          <p className="text-red-500 text-xs">{errors.auth}</p>
+
+          {!isSignin && (
+            <div>
+              <div className="bg-(--bg-light) py-3 px-3 rounded-lg flex flex-col gap-2">
+                {/* Label */}
+                <span className="text-xs  text-(--text-muted)/80">
+                  Select Avatar
+                </span>
+
+                {/* Avatars */}
+                <div className="flex  justify-between items-center">
+                  {avatar.map((avatar) => (
+                    <div
+                      key={avatar.id}
+                      onClick={() => setAvatarID(avatar.id)}
+                      className={`w-10 h-10 rounded-full cursor-pointer transition 
+          border ${avatar.color}
+          ${avatarID === avatar.id ? "ring-(--border-muted) ring-2 shadow-(--shadow-l) scale-115 translate-y-1" : "translate-y-0.5 shadow-(--shadow-s)  hover:scale-105"}`}
+                    >
+                      <img
+                        src={avatar.link}
+                        alt="Avatar"
+                        className="w-full  h-full rounded-full cursor-pointer "
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {errors.avatar && (
+                <p className="text-red-500 ml-1 mt-1 text-xs">
+                  {errors.avatar}
+                </p>
+              )}
+            </div>
+          )}
+
+          <p className="text-red-500 ml-1 text-xs">{errors.auth}</p>
 
           <button
             disabled={loading}
@@ -195,13 +234,14 @@ const Login = () => {
             {isSignin ? " Don't have an account? " : "Already have an account?"}
             <span
               onClick={() => {
-                setIsSignin(!isSignin);
+                setIsSignin((prev) => !prev);
                 setErrors({});
                 setUsername("");
                 setEmail("");
                 setPassword("");
                 setConfirmPassword("");
                 setAvatarID(null);
+                setLoading(false);
               }}
               className="text-blue-400 cursor-pointer hover:underline"
             >

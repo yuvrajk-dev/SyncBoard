@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "../pages/auth/Login";
 import Home from "./Home";
 import CanvasContainer from "../pages/CanvasContainer";
+import CanvasIndex from "../Components/CanvasIndex";
 
 const Body = () => {
   const appRouter = createBrowserRouter([
@@ -15,6 +16,10 @@ const Body = () => {
       children: [
         {
           index: true,
+          element: <CanvasIndex />,
+        },
+        {
+          path: "canvas",
           element: <CanvasContainer />,
         },
       ],

@@ -5,10 +5,8 @@ const validation = (username, email, password, avatar, isSignin) => {
   if (!isSignin) {
     if (!username.trim()) {
       errors.username = "Username is required";
-    }
-
-    if (username.length > 8) {
-      errors.username = "Username must be under 8 characters";
+    } else if (username.length > 15) {
+      errors.username = "Username must be under 15 characters";
     }
 
     if (!avatar) {
@@ -17,7 +15,7 @@ const validation = (username, email, password, avatar, isSignin) => {
   }
 
   // Common validations
-  const emailRegex = /^[^\s@]+@[^\s@]+\.com$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   if (!email.trim()) {
     errors.email = "Email is required";
