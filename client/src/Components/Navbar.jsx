@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const avatarMap = {
     "001": "/avatarM01.png",
     "002": "/avatarM02.png",
@@ -17,9 +18,42 @@ const Navbar = () => {
       <div className="flex">SyncBoard</div>
 
       <div className="flex items-center  gap-3">
-        <p className="rounded-wxl capitalize bg-(--bg-light) px-5 py-2 text-sm font-semibold text-(--text) shadow-(--shadow-s)">
-          {user.username}
-        </p>
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setIsUserMenuOpen((isOpen) => !isOpen)}
+            className="flex items-center gap-2 rounded-full bg-(--bg-light) px-5 py-2 text-sm font-semibold capitalize text-(--text) shadow-(--shadow-s) hover:shadow-(--shadow-m)"
+          >
+            {user.username}
+            <svg
+              aria-hidden="true"
+              className={`h-4 w-4 transition-transform ${isUserMenuOpen ? "rotate-180" : ""}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="m6 9 6 6 6-6"
+              />
+            </svg>
+          </button>
+
+          {isUserMenuOpen && (
+            <ul className="absolute right-0 top-12 z-20 w-40 overflow-hidden rounded-xl border border-white/10 bg-(--bg-light) py-2 text-sm font-semibold text-(--text) shadow-(--shadow-m)">
+              <li>
+                <button className="w-full px-4 py-2 text-left hover:text-amber-300 ">
+                  Profile
+                </button>
+              </li>
+              <li>
+                <button className="w-full px-4 py-2 text-left  ">Logout</button>
+              </li>
+            </ul>
+          )}
+        </div>
 
         <button
           type="button"

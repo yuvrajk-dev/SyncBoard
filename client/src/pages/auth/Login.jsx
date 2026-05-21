@@ -71,7 +71,11 @@ const Login = () => {
                   setErrors({ auth: error.message });
                   return;
                 }
-                await updateStore(data, userDispatch);
+                const result = await updateStore(data, userDispatch);
+                if (result?.error) {
+                  setErrors({ auth: result.error });
+                  return;
+                }
 
                 navigate("/home");
               }
@@ -99,7 +103,11 @@ const Login = () => {
                   setErrors({ auth: profileError.message });
                   return;
                 }
-                await updateStore(data, userDispatch);
+                const result = await updateStore(data, userDispatch);
+                if (result?.error) {
+                  setErrors({ auth: result.error });
+                  return;
+                }
 
                 navigate("/home");
               }

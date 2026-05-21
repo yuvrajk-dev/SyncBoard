@@ -9,8 +9,7 @@ const updateStore = async (data, userDispatch) => {
     .single();
 
   if (error) {
-    console.log(error.message);
-    return;
+    return { error: error.message };
   }
   const finalUser = {
     id: data.user.id,
