@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { supabase } from "../utils/supabase";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const navigate = useNavigate();
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return localStorage.getItem("theme") === "dark";
+  });
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const avatarMap = {
     "001": "/avatarM01.png",
@@ -10,8 +15,40 @@ const Navbar = () => {
     "003": "/avatarF03.png",
     "004": "/avatarF04.png",
   };
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme === "dark") {
+      document.body.classList.add("dark");
+      document.body.classList.remove("light");
+    } else {
+      document.body.classList.add("light");
+      document.body.classList.remove("dark");
+    }
+  }, []);
+  const toggleTheme = () => {
+    const newTheme = !isDarkMode;
+
+    setIsDarkMode(newTheme);
+
+    document.body.classList.toggle("dark", newTheme);
+    document.body.classList.toggle("light", !newTheme);
+
+    localStorage.setItem("theme", newTheme ? "dark" : "light");
+  };
 
   const user = useSelector((data) => data.user);
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Logged out");
+      navigate("/");
+    }
+  };
 
   return (
     <div className="flex h-20 w-full items-center justify-between border-b border-white/10 bg-(--bg) pr-5 pl-10 ">
@@ -22,9 +59,14 @@ const Navbar = () => {
           <button
             type="button"
             onClick={() => setIsUserMenuOpen((isOpen) => !isOpen)}
-            className="flex items-center gap-2 rounded-full bg-(--bg-light) px-5 py-2 text-sm font-semibold capitalize text-(--text) shadow-(--shadow-s) hover:shadow-(--shadow-m)"
+            className="flex cursor-pointer    items-center py-1 px-3 gap-2 rounded-full bg-(--bg-light)  text-sm font-semibold capitalize text-(--text) shadow-(--shadow-s) hover:shadow-(--shadow-m)"
           >
-            {user.username}
+            <img
+              src={avatarMap[user?.avatar]}
+              alt="Avatar"
+              className="  w-7  rounded-full  "
+            />
+            {user?.username}
             <svg
               aria-hidden="true"
               className={`h-4 w-4 transition-transform ${isUserMenuOpen ? "rotate-180" : ""}`}
@@ -44,12 +86,36 @@ const Navbar = () => {
           {isUserMenuOpen && (
             <ul className="absolute right-0 top-12 z-20 w-40 overflow-hidden rounded-xl border border-white/10 bg-(--bg-light) py-2 text-sm font-semibold text-(--text) shadow-(--shadow-m)">
               <li>
-                <button className="w-full px-4 py-2 text-left hover:text-amber-300 ">
+                <button
+                  onClick={() => {
+                    navigate("/home");
+
+                    setIsUserMenuOpen(false);
+                  }}
+                  className="w-full px-4 py-2 text-left hover:text- "
+                >
+                  Home
+                </button>
+              </li>{" "}
+              <li>
+                <button
+                  onClick={() => {
+                    navigate("/home/profile");
+
+                    setIsUserMenuOpen(false);
+                  }}
+                  className="w-full px-4 py-2 text-left hover:text- "
+                >
                   Profile
                 </button>
               </li>
               <li>
-                <button className="w-full px-4 py-2 text-left  ">Logout</button>
+                <button
+                  onClick={handleLogout}
+                  className="w-full  px-4 py-2 text-left  "
+                >
+                  Logout
+                </button>
               </li>
             </ul>
           )}
@@ -57,7 +123,7 @@ const Navbar = () => {
 
         <button
           type="button"
-          onClick={() => setIsDarkMode((currentMode) => !currentMode)}
+          onClick={toggleTheme}
           aria-label={
             isDarkMode ? "Switch to light mode" : "Switch to dark mode"
           }

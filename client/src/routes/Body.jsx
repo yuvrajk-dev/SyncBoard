@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../utils/supabase";
 import { updateStore } from "../utils/updateStore";
 import { useDispatch } from "react-redux";
+import Profile from "../Components/Profile";
 
 const Body = () => {
   const userDispatch = useDispatch();
@@ -28,9 +29,6 @@ const Body = () => {
     restoreUser();
   }, [userDispatch]);
 
-  if (checkingAuth) {
-    return <div>Loading...</div>;
-  }
   const appRouter = createBrowserRouter([
     {
       path: "/",
@@ -38,7 +36,19 @@ const Body = () => {
     },
     {
       path: "/home",
-      element: <Home />,
+      element: checkingAuth ? (
+        <div className="min-h-screen flex items-center justify-center bg-(--bg)">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-12 h-12 border-4 border-white/20 border-t-blue-500 rounded-full animate-spin"></div>
+
+            <p className="text-(--text-muted) font-semibold tracking-wide">
+              Loading Workspace...
+            </p>
+          </div>
+        </div>
+      ) : (
+        <Home />
+      ),
       children: [
         {
           index: true,
@@ -47,6 +57,10 @@ const Body = () => {
         {
           path: "canvas",
           element: <CanvasContainer />,
+        },
+        {
+          path: "profile",
+          element: <Profile />,
         },
       ],
     },
