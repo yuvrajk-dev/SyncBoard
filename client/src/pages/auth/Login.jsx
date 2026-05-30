@@ -2,14 +2,12 @@ import { useEffect, useState } from "react";
 import Footer from "../../Components/Footer";
 import { validation } from "../../utils/validate";
 import { supabase } from "../../utils/supabase";
-import { useNavigate } from "react-router";
 import { updateStore } from "../../utils/updateStore";
 import { useDispatch } from "react-redux";
 
 const Login = () => {
   const userDispatch = useDispatch();
 
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [isSignin, setIsSignin] = useState(() => {
     const value = sessionStorage.getItem("signin");
@@ -99,8 +97,6 @@ const Login = () => {
                   setErrors({ auth: result.error });
                   return;
                 }
-
-                navigate("/home");
               }
 
               if (!isSignin) {
@@ -131,8 +127,6 @@ const Login = () => {
                   setErrors({ auth: result.error });
                   return;
                 }
-
-                navigate("/home");
               }
             } finally {
               setLoading(false);

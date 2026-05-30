@@ -46,7 +46,6 @@ const Navbar = () => {
       console.log(error);
     } else {
       console.log("Logged out");
-      navigate("/");
     }
   };
 
