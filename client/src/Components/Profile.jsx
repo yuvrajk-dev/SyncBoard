@@ -45,6 +45,12 @@ const Profile = () => {
         setError(error.message);
         return;
       }
+      await supabase.auth.updateUser({
+        data: {
+          username: cleanUsername,
+          avatar,
+        },
+      });
 
       dispatch(
         addUser({
